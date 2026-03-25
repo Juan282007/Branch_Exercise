@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   db:
     image: postgres:15
@@ -14,6 +12,31 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  liquibase:
+    image: liquibase/liquibase:latest
+    depends_on:
+      db:
+        condition: service_started
+    volumes:
+      - ./liquibase.properties:/liquibase/liquibase.properties
+      - ./00-changelog.yaml:/liquibase/00-changelog.yaml
+      - ./01_tables:/liquibase/01_tables
+      - ./02_views:/liquibase/02_views
+      - ./03_functions:/liquibase/03_functions
+      - ./04_procedures:/liquibase/04_procedures
+      - ./05_triggers:/liquibase/05_triggers
+      - ./06_indexes:/liquibase/06_indexes
+      - ./07_materialized_views:/liquibase/07_materialized_views
+      - ./08_types:/liquibase/08_types
+      - ./09_inserts:/liquibase/09_inserts
+      - ./10_updates:/liquibase/10_updates
+      - ./11_rollbacks:/liquibase/11_rollbacks
+      - ./drivers:/liquibase/drivers  # Aquí se monta la carpeta con el .jar
+    working_dir: /liquibase
+    command: >
+      --defaultsFile=/liquibase/liquibase.properties
+      --classpath=/liquibase/drivers/postgresql-42.7.3.jar
+      update
+
 volumes:
   pg_data:
-    
