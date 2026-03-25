@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 09_inserts_01
+      author: juanpablogomezperdomo@gmail.com
+      context: billing
+      labels: HU_02
+      comment: Insert first person record
+      changes:
+        - sqlFile:
+            path: 09_inserts/01-insert-person.sql
+            endDelimiter: "\nGO"
+            stripComments: false
+      rollback:
+        - sqlFile:
+            path: 11_rollbacks/09_inserts/01-insert-person-rollback.sql
